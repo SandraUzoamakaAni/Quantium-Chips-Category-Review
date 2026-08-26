@@ -1,11 +1,18 @@
-import pandas as pd
+"""Generate the Task 1 charts from the cleaned analysis outputs."""
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-import numpy as np
+import pandas as pd
 
-data = pd.read_csv("QVI_data_clean.csv")
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data"
+CHARTS = ROOT / "charts"
+CHARTS.mkdir(exist_ok=True)
+
+data = pd.read_csv(DATA / "QVI_data_clean.csv")
 data["DATE"] = pd.to_datetime(data["DATE"])
-segment_summary = pd.read_csv("segment_summary.csv")
+segment_summary = pd.read_csv(DATA / "segment_summary.csv")
 
 pivot = segment_summary.pivot(index="LIFESTAGE", columns="PREMIUM_CUSTOMER", values="TOT_SALES")
 pivot = pivot[["Budget", "Mainstream", "Premium"]]
@@ -18,7 +25,7 @@ ax.set_title("Total Chip Sales by Customer Segment")
 ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"${x:,.0f}"))
 ax.legend(title="Customer type", loc="lower right")
 plt.tight_layout()
-plt.savefig("chart1_sales_by_segment.png", dpi=150)
+plt.savefig(CHARTS / "chart1_sales_by_segment.png", dpi=150)
 plt.close()
 
 fig, ax = plt.subplots(figsize=(9, 6))
@@ -32,7 +39,7 @@ ax.set_ylabel("Average spend per customer ($)")
 ax.set_title("Segment Size vs. Average Spend per Customer\n(bubble size = total segment sales)")
 ax.legend(title="Customer type")
 plt.tight_layout()
-plt.savefig("chart2_spend_vs_size.png", dpi=150)
+plt.savefig(CHARTS / "chart2_spend_vs_size.png", dpi=150)
 plt.close()
 
 target = data[(data.LIFESTAGE == "YOUNG SINGLES/COUPLES") & (data.PREMIUM_CUSTOMER == "Mainstream")]
@@ -46,7 +53,7 @@ ax.axvline(1.0, color="gray", linestyle="--", linewidth=1)
 ax.set_xlabel("Affinity index (1.0 = same rate as rest of customers)")
 ax.set_title("Brand Affinity: Mainstream Young Singles/Couples vs. All Other Customers")
 plt.tight_layout()
-plt.savefig("chart3_brand_affinity.png", dpi=150)
+plt.savefig(CHARTS / "chart3_brand_affinity.png", dpi=150)
 plt.close()
 
 monthly = data.set_index("DATE").resample("ME")["TOT_SALES"].sum()
@@ -57,7 +64,7 @@ ax.set_ylabel("Total sales ($)")
 ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"${x:,.0f}"))
 plt.xticks(rotation=45)
 plt.tight_layout()
-plt.savefig("chart4_monthly_trend.png", dpi=150)
+plt.savefig(CHARTS / "chart4_monthly_trend.png", dpi=150)
 plt.close()
 
-print("Charts saved.")
+print("Charts saved to charts/.")
