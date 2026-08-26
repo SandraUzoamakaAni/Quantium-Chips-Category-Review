@@ -52,6 +52,7 @@ Quantium-Chips-Category-Review/
 ├── requirements.txt
 │
 ├── data/
+│   ├── README.md
 │   ├── monthly_store_metrics.csv
 │   ├── sales_by_segment.csv
 │   └── segment_summary.csv
@@ -61,7 +62,7 @@ Quantium-Chips-Category-Review/
 │   ├── task1_charts.py
 │   └── task2_experimentation_uplift.py
 │
-├── results/
+├── charts/
 │   ├── chart1_sales_by_segment.png
 │   ├── chart2_spend_vs_size.png
 │   ├── chart3_brand_affinity.png
@@ -94,7 +95,9 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Run the scripts from the repository root. The processed CSV files in `data/` contain the summary outputs used by the visualizations and presentation.
+The scripts document the original analysis workflow. The processed CSV files in `data/` contain summary outputs used by the visualizations and presentation.
+
+> **Source-data note:** The original Quantium simulation files (`QVI_transaction_data.xlsx`, `QVI_purchase_behaviour.csv`, and `QVI_data.csv`) are not included in this public repository. This avoids redistributing the original simulation data while still providing the analysis code, processed outputs, charts, and final presentation.
 
 ## Deliverables
 
@@ -102,7 +105,7 @@ Run the scripts from the repository root. The processed CSV files in `data/` con
 The Python scripts document the main data preparation, category analysis, visualization, and experimentation workflow.
 
 ### Visualizations
-The `results/` folder contains the key charts generated from the analysis.
+The `charts/` folder contains the key charts generated from the analysis.
 
 ### Final presentation
 The `presentation/` folder contains both the PDF and editable PowerPoint versions of the final analysis presentation.
