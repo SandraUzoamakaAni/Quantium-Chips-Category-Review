@@ -1,12 +1,12 @@
 # Quantium Chips Category Review
 
-> A data analytics and experimentation project based on the **Quantium Data Analytics Job Simulation** through Forage.
+> A data analytics and experimentation portfolio project based on the **Quantium Data Analytics Job Simulation** through Forage.
 
 ## Project overview
 
-This project analyzes customer purchasing behavior in the chips category and evaluates a store trial designed to understand whether a new store layout improved sales performance.
+This project analyzes customer purchasing behavior in the chips category and evaluates a store trial designed to determine whether a new store layout improved sales performance.
 
-The analysis combines **data preparation, customer segmentation, exploratory analysis, visualization, and uplift/experimentation analysis** to turn transaction data into practical commercial recommendations.
+The analysis combines **data preparation, customer segmentation, exploratory analysis, visualization, control-store selection, and uplift testing** to turn retail transaction data into practical commercial recommendations.
 
 ## Business questions
 
@@ -14,21 +14,23 @@ The analysis combines **data preparation, customer segmentation, exploratory ana
 - How do customer characteristics relate to chip spend and purchase behavior?
 - Which brands and pack sizes show the strongest customer affinity?
 - What seasonal patterns appear in category sales?
-- Did the trial store experience a meaningful uplift compared with its control stores?
+- Did the trial stores experience meaningful uplift compared with matched control stores?
 - What actions should the business take based on the evidence?
 
 ## Analysis
 
 ### 1. Customer & Category Analysis
 
-The first stage prepares and analyzes the customer and transaction data, including:
+The first stage prepares and analyzes transaction and customer data, including:
 
+- duplicate and outlier handling
+- salsa-product exclusion
+- product-name standardization
 - customer segmentation
 - total sales by customer segment
 - spend and purchase behavior by pack size
 - brand affinity
 - monthly sales trends
-- category-level visualizations
 
 ### 2. Store Trial Experimentation
 
@@ -36,9 +38,11 @@ The second stage evaluates the trial using comparable control stores and measure
 
 - monthly sales performance
 - transaction and customer metrics
-- trial vs. control performance
+- correlation and magnitude-based control-store matching
+- trial vs. scaled-control performance
 - uplift during the trial period
-- whether the observed change supports a commercial recommendation
+- statistical significance using a t-test framework
+- customer frequency and pricing drivers
 
 ## Key outputs
 
@@ -69,7 +73,7 @@ Quantium-Chips-Category-Review/
 │   ├── chart4_monthly_trend.png
 │   └── trial_vs_control_77.png
 │
-└── presentation/
+└── presentations/
     ├── Quantium_Chips_Category_Review.pdf
     └── Quantium_Chips_Category_Review.pptx
 ```
@@ -80,6 +84,7 @@ Quantium-Chips-Category-Review/
 - pandas
 - NumPy
 - Matplotlib
+- SciPy
 - Statistical analysis
 - Customer segmentation
 - Data visualization
@@ -95,20 +100,31 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-The scripts document the original analysis workflow. The processed CSV files in `data/` contain summary outputs used by the visualizations and presentation.
+The scripts are designed to be run from the repository and use paths relative to the project root. The original Quantium simulation source files must be placed in `data/` before running the raw-data workflow:
 
-> **Source-data note:** The original Quantium simulation files (`QVI_transaction_data.xlsx`, `QVI_purchase_behaviour.csv`, and `QVI_data.csv`) are not included in this public repository. This avoids redistributing the original simulation data while still providing the analysis code, processed outputs, charts, and final presentation.
+- `QVI_transaction_data.xlsx`
+- `QVI_purchase_behaviour.csv`
+- `QVI_data.csv`
+
+The public repository intentionally does **not** redistribute those original simulation files. The included processed CSVs, charts, scripts, and presentations preserve the portfolio evidence without republishing the source data.
+
+### Task 1 workflow
+
+1. Place `QVI_transaction_data.xlsx` and `QVI_purchase_behaviour.csv` in `data/`.
+2. Run `scripts/task1_data_prep_and_analysis.py`.
+3. Run `scripts/task1_charts.py` to regenerate the charts in `charts/`.
+
+### Task 2 workflow
+
+1. Place `QVI_data.csv` in `data/`.
+2. Run `scripts/task2_experimentation_uplift.py`.
 
 ## Deliverables
 
-### Analysis
-The Python scripts document the main data preparation, category analysis, visualization, and experimentation workflow.
-
-### Visualizations
-The `charts/` folder contains the key charts generated from the analysis.
-
-### Final presentation
-The `presentation/` folder contains both the PDF and editable PowerPoint versions of the final analysis presentation.
+- **Analysis scripts:** data preparation, category analysis, visualization, and experimentation workflow.
+- **Processed datasets:** summary tables used for the final analysis.
+- **Charts:** key customer, category, and trial/control visuals.
+- **Presentation:** PDF and editable PowerPoint versions of the final analysis.
 
 ## Disclaimer
 
