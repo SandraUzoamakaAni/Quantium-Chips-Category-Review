@@ -1,15 +1,22 @@
 """
 Quantium Data Analytics Virtual Experience - Task 1
-Data preparation and customer analytics
+Data preparation and customer analytics.
+
+The original Quantium source files are intentionally not included in this
+public repository. Place them in data/ before running this workflow.
 """
-import pandas as pd
-import numpy as np
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import matplotlib.ticker as mticker
 
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data"
 pd.set_option("display.width", 120)
 
-txn = pd.read_excel("QVI_transaction_data.xlsx")
+txn = pd.read_excel(DATA / "QVI_transaction_data.xlsx")
 txn["DATE"] = pd.to_datetime(txn["DATE"], unit="D", origin="1899-12-30")
 before = len(txn)
 txn = txn.drop_duplicates()
@@ -36,7 +43,7 @@ print(f"Date range: {txn['DATE'].min().date()} to {txn['DATE'].max().date()}")
 print(f"Unique brands: {txn['BRAND'].nunique()}")
 print(f"Pack sizes: {sorted(txn['PACK_SIZE'].unique())}")
 
-cust = pd.read_csv("QVI_purchase_behaviour.csv")
+cust = pd.read_csv(DATA / "QVI_purchase_behaviour.csv")
 print(f"\nCustomer records: {len(cust):,}")
 print(f"Nulls:\n{cust.isnull().sum()}")
 print(f"LIFESTAGE categories: {cust['LIFESTAGE'].unique().tolist()}")
@@ -45,11 +52,11 @@ print(f"PREMIUM_CUSTOMER categories: {cust['PREMIUM_CUSTOMER'].unique().tolist()
 data = txn.merge(cust, on="LYLTY_CARD_NBR", how="left")
 print(f"\nMerged dataset shape: {data.shape}")
 print(f"Unmatched customers after merge: {data['LIFESTAGE'].isnull().sum()}")
-data.to_csv("QVI_data_clean.csv", index=False)
-print("Saved cleaned & merged dataset -> QVI_data_clean.csv")
+data.to_csv(DATA / "QVI_data_clean.csv", index=False)
+print("Saved cleaned & merged dataset -> data/QVI_data_clean.csv")
 
 sales_by_segment = data.groupby(["LIFESTAGE", "PREMIUM_CUSTOMER"])["TOT_SALES"].sum().reset_index().sort_values("TOT_SALES", ascending=False)
-sales_by_segment.to_csv("sales_by_segment.csv", index=False)
+sales_by_segment.to_csv(DATA / "sales_by_segment.csv", index=False)
 print("\nTop 5 segments by total sales:")
 print(sales_by_segment.head())
 customers_by_segment = cust.groupby(["LIFESTAGE", "PREMIUM_CUSTOMER"])["LYLTY_CARD_NBR"].nunique().reset_index(name="N_CUSTOMERS")
@@ -59,7 +66,7 @@ units_per_cust = data.groupby(["LIFESTAGE", "PREMIUM_CUSTOMER", "LYLTY_CARD_NBR"
 avg_units_by_segment = units_per_cust.groupby(["LIFESTAGE", "PREMIUM_CUSTOMER"])["PROD_QTY"].mean().reset_index(name="AVG_UNITS_PER_CUSTOMER")
 segment_summary = sales_by_segment.merge(customers_by_segment, on=["LIFESTAGE", "PREMIUM_CUSTOMER"]).merge(avg_spend_by_segment, on=["LIFESTAGE", "PREMIUM_CUSTOMER"]).merge(avg_units_by_segment, on=["LIFESTAGE", "PREMIUM_CUSTOMER"])
 segment_summary["AVG_PRICE_PER_UNIT"] = segment_summary["TOT_SALES"] / (segment_summary["AVG_UNITS_PER_CUSTOMER"] * segment_summary["N_CUSTOMERS"])
-segment_summary.to_csv("segment_summary.csv", index=False)
+segment_summary.to_csv(DATA / "segment_summary.csv", index=False)
 print("\nFull segment summary:")
 print(segment_summary.to_string(index=False))
 top_segments = segment_summary.nlargest(2, "TOT_SALES")[["LIFESTAGE", "PREMIUM_CUSTOMER"]]
