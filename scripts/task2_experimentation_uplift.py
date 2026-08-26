@@ -1,15 +1,23 @@
 """
 Quantium Data Analytics Virtual Experience - Task 2
 Experimentation and uplift testing.
+
+The original Quantium source data is intentionally not included in this
+public repository. Place QVI_data.csv in data/ before running this workflow.
 """
+from pathlib import Path
+
 import pandas as pd
 from scipy import stats
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data"
 
 TRIAL_STORES = [77, 86, 88]
 TRIAL_PERIOD = [pd.Period("2019-02"), pd.Period("2019-03"), pd.Period("2019-04")]
 PRE_TRIAL_MONTHS = [pd.Period(f"2018-{m:02d}") for m in range(7, 13)] + [pd.Period("2019-01")]
 
-data = pd.read_csv("QVI_data.csv")
+data = pd.read_csv(DATA / "QVI_data.csv")
 data["DATE"] = pd.to_datetime(data["DATE"])
 data["YEARMONTH"] = data["DATE"].dt.to_period("M")
 months_per_store = data.groupby("STORE_NBR")["YEARMONTH"].nunique()
@@ -25,7 +33,7 @@ monthly = data.groupby(["STORE_NBR", "YEARMONTH"]).agg(
 monthly["nTxnPerCust"] = monthly["nTxn"] / monthly["nCustomers"]
 monthly["nChipsPerTxn"] = monthly["nChips"] / monthly["nTxn"]
 monthly["avgPricePerUnit"] = monthly["totSales"] / monthly["nChips"]
-monthly.to_csv("monthly_store_metrics.csv", index=False)
+monthly.to_csv(DATA / "monthly_store_metrics.csv", index=False)
 
 
 def calculate_correlation(pre_trial, metric, trial_store):
